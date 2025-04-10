@@ -204,12 +204,6 @@ function GameStats() {
         </button>
         </div>
 
-        <JottokTerminal 
-          currentFortune={currentFortune}
-          systemMessage={systemMessage}
-          upgrades={upgrades}
-        />
-
         <div className="flex justify-between text-sm mb-4">
           <div className="text-red-500">Volatility: {volatility.toFixed(1)}x</div>
           <div>Achievements: {achievements.length}/15</div>
@@ -261,6 +255,12 @@ function GameStats() {
           </div>
           <Label className="mt-2 block">Total Production: {hatsPerSecond}/sec</Label>
         </div>
+
+        <JottokTerminal 
+          currentFortune={currentFortune}
+          systemMessage={systemMessage}
+          upgrades={upgrades}
+        />
       </CardContent>
     </Card>
     <style>{`

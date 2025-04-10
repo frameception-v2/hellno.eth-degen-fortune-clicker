@@ -20,8 +20,28 @@ import {
 import { Label } from "~/components/ui/label";
 import { useFrameSDK } from "~/hooks/useFrameSDK";
 
+const DEGEN_TIPS = [
+  "When in doubt, leverage up",
+  "The real alpha is always in the DMs",
+  "If TVL is dropping, print more governance tokens",
+  "Rugpulls are just unregistered ICOs",
+  "The best time to ape was yesterday. Second best is now",
+  "If chart going up, it's a bull market. If down, accumulation phase",
+  "Your seed phrase is: pizza salad burger... just kidding"
+];
+
+const CRYPTIC_EVENTS = [
+  { text: "You discover a secret Satoshi tweetstorm... (+500% multiplier!)", multiplier: 5 },
+  { text: "The SEC raids your metamask... (Lost 50% fortune!)", multiplier: -0.5 },
+  { text: "Vitalik retweets your memecoin... (2x production!)", effect: "2x" },
+  { text: "Celsius unlocks your assets... (Refund 20%!)", effect: "refund" }
+];
+
 function GameStats() {
-  const [hats, setHats] = useState(0);
+  const [fortune, setFortune] = useState(0);
+  const [lore, setLore] = useState<string[]>([]);
+  const [achievements, setAchievements] = useState<string[]>([]);
+  const [currentFortune, setCurrentFortune] = useState("");
   const [upgrades, setUpgrades] = useState(0);
   const [factories, setFactories] = useState(0);
   const [clickMultiplier, setClickMultiplier] = useState(1);
@@ -41,7 +61,7 @@ function GameStats() {
   useEffect(() => {
     if (factories > 0) {
       const interval = setInterval(() => {
-        setHats(prev => prev + hatsPerSecond);
+        setFortune(prev => prev + hatsPerSecond);
       }, 1000);
       setAutoClickerInterval(interval);
       return () => clearInterval(interval);
@@ -49,69 +69,88 @@ function GameStats() {
   }, [factories, hatsPerSecond]);
 
   const handleClick = useCallback(() => {
-    // Base click with multiplier
-    let baseHats = clickMultiplier;
+    // Base click with risk multiplier
+    let baseFortune = clickMultiplier;
+    const fortuneEvent = CRYPTIC_EVENTS[Math.floor(Math.random() * CRYPTIC_EVENTS.length)];
     
-    // Random fortune bonus
+    // Random crypto event
     if (Math.random() < FORTUNE_CHANCE) {
-      baseHats *= 2;
+      setCurrentFortune(fortuneEvent.text);
+      if (fortuneEvent.multiplier) {
+        baseFortune *= fortuneEvent.multiplier;
+      }
+      if (fortuneEvent.effect === '2x') {
+        setUpgrades(prev => prev + 1);
+      }
+    } else {
+      setCurrentFortune(DEGEN_TIPS[Math.floor(Math.random() * DEGEN_TIPS.length)]);
     }
     
-    setHats(prev => prev + baseHats);
-  }, [clickMultiplier]);
+    // Check for secret achievements
+    if (baseFortune < 0 && !achievements.includes("Liquidation Wizard")) {
+      setAchievements(prev => [...prev, "Liquidation Wizard"]);
+    }
+    
+    setFortune(prev => Math.max(0, prev + Math.floor(baseFortune)));
+    setLore(prev => [...prev.slice(-4), currentFortune]);
+  }, [clickMultiplier, currentFortune, achievements]);
 
   const buyUpgrade = useCallback(() => {
-    if (hats >= upgradeCost) {
-      setHats(prev => prev - upgradeCost);
+    if (fortune >= upgradeCost) {
+      setFortune(prev => prev - upgradeCost);
       setUpgrades(prev => prev + 1);
       setClickMultiplier(prev => prev * CLICK_MULTIPLIER);
     }
-  }, [hats, upgradeCost]);
+  }, [fortune, upgradeCost, CLICK_MULTIPLIER]);
 
   const buyFactory = useCallback(() => {
-    if (hats >= FACTORY_COST) {
-      setHats(prev => prev - FACTORY_COST);
+    if (fortune >= FACTORY_COST) {
+      setFortune(prev => prev - FACTORY_COST);
       setFactories(prev => prev + 1);
     }
-  }, [hats]);
+  }, [fortune, FACTORY_COST]);
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>🎩 Hat Factory</CardTitle>
+        <CardTitle>🤑 Degen Fortune</CardTitle>
         <CardDescription>
-          Click to make hats! Upgrade your production chain.
+          Each click risks it all for crypto wisdom. Will you HODL or fold?
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex justify-between">
-          <Label>Hats: {Math.floor(hats).toLocaleString()}</Label>
+          <Label>Fortune: ${Math.floor(fortune).toLocaleString()}</Label>
           <Label>Upgrades: {upgrades}</Label>
           <Label>Factories: {factories}</Label>
         </div>
 
+        <div className="mb-4 min-h-[80px] border rounded p-2 bg-yellow-50">
+          {currentFortune || "Click to reveal first secret..."}
+        </div>
+        
         <button 
           onClick={handleClick}
-          className="w-full py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+          className="w-full py-4 bg-gradient-to-r from-red-500 to-yellow-500 text-black rounded-lg hover:from-red-600 hover:to-yellow-600 transition font-bold"
         >
-          CLICK TO MAKE HATS (+{clickMultiplier})
+          REVEAL FORTUNE (+${clickMultiplier})
         </button>
 
         <div className="grid grid-cols-2 gap-4">
           <button
             onClick={buyUpgrade}
-            disabled={hats < upgradeCost}
+            disabled={fortune < upgradeCost}
             className="p-2 bg-green-500 text-white rounded disabled:opacity-50"
           >
-            Buy Upgrade ({upgradeCost.toLocaleString()} hats)
+            Degenerate Wisdom ({upgradeCost.toLocaleString()} $DEGEN)
           </button>
           
           <button
             onClick={buyFactory}
-            disabled={hats < FACTORY_COST}
+            disabled={fortune < FACTORY_COST}
             className="p-2 bg-purple-500 text-white rounded disabled:opacity-50"
           >
-            Buy Factory ({FACTORY_COST.toLocaleString()} hats)
+            Oracle Node ({FACTORY_COST.toLocaleString()} $DEGEN)
           </button>
         </div>
 

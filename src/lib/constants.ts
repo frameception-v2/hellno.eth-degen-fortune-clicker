@@ -10,20 +10,20 @@ export const FORTUNE_CHANCE = 0.25;
 export const FACTORY_TYPES = [
   { 
     name: "Based Basement", 
-    baseCost: 50, 
-    production: 1,
+    baseCost: 25, 
+    production: 2,
     emoji: "🛖"
   },
   {
     name: "Jacek’s Jam",
-    baseCost: 300,
-    production: 5,
+    baseCost: 150,
+    production: 8,
     emoji: "🎷"
   },
   {
     name: "Europooor Elves",
-    baseCost: 1500,
-    production: 15,
+    baseCost: 750,
+    production: 25,
     emoji: "🧝"
   }
 ];

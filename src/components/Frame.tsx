@@ -164,14 +164,14 @@ function GameStats() {
 
   return (
     <>
-      <Card className="h-full flex flex-col bg-opacity-90 bg-gray-800 border-yellow-500">
+      <Card className="h-full flex flex-col bg-opacity-90 bg-gray-800 border-yellow-500 rounded-xl shadow-2xl">
         <CardHeader>
         <CardTitle>🤑 Degen Fortune</CardTitle>
         <CardDescription>
           Each click risks it all for crypto wisdom. Will you HODL or fold?
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col flex-grow space-y-4 p-4">
+      <CardContent className="flex flex-col flex-grow space-y-6 p-4 md:p-6">
         <div className="flex justify-between">
           <Label>Fortune: ${Math.floor(fortune).toLocaleString()}</Label>
           <Label>Upgrades: {upgrades}</Label>
@@ -195,17 +195,17 @@ function GameStats() {
           ))}
           <button 
             onClick={handleClick}
-            className="relative w-full py-4 md:py-6 bg-gradient-to-r from-red-500 to-yellow-500 text-black rounded-full hover:from-red-600 hover:to-yellow-600 transition-all font-bold flex flex-col items-center gap-2 text-lg md:text-xl z-10"
+            className="relative w-full py-6 md:py-8 bg-gradient-to-r from-red-500 to-yellow-500 text-black rounded-full hover:from-red-600 hover:to-yellow-600 transition-all font-bold flex flex-col items-center gap-3 text-xl md:text-2xl z-10"
           >
-          <div className="text-4xl animate-bounce">🎩</div>
+          <div className="text-5xl md:text-6xl animate-bounce">🎩</div>
           <div>COLLECT</div>
-          <div className="text-sm">+{clickMultiplier.toFixed(1)}× DEGEN</div>
+          <div className="text-base md:text-lg">+{clickMultiplier.toFixed(1)}× DEGEN</div>
         </button>
         </div>
 
-        <div className="mb-4 min-h-[120px] border-2 border-yellow-500 rounded-lg p-3 bg-gray-900 relative">
-          <div className="text-sm mb-2 text-yellow-500">Degen Terminal v0x{upgrades.toString(16)}</div>
-          <div className="font-mono text-yellow-400 text-sm md:text-base">
+        <div className="mb-4 min-h-[140px] border-2 border-yellow-500 rounded-xl p-4 bg-gray-900 relative">
+          <div className="text-base mb-3 text-yellow-500">Degen Terminal v0x{upgrades.toString(16)}</div>
+          <div className="font-mono text-yellow-400 text-base md:text-base lg:text-lg">
             {currentFortune || "Click to reveal first secret..."}
           </div>
           
@@ -222,17 +222,17 @@ function GameStats() {
         </div>
         
 
-        <div className="grid grid-cols-1 gap-2 mb-4">
+        <div className="grid grid-cols-1 gap-3 mb-6">
           <button
             onClick={buyUpgrade}
             disabled={fortune < upgradeCost}
-            className="p-2 md:p-3 bg-green-600 hover:bg-green-700 text-white rounded-lg disabled:opacity-50 text-sm md:text-base transition-colors"
+            className="p-3 md:p-4 bg-green-600 hover:bg-green-700 text-white rounded-xl disabled:opacity-50 text-base md:text-lg transition-colors"
           >
             🧠 Degenerate Wisdom ({upgradeCost.toLocaleString()} $DEGEN)
           </button>
         </div>
 
-        <div className="grid grid-cols-3 gap-2 md:gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
           {FACTORY_TYPES.map((factory, index) => {
             const count = factories[index];
             const cost = Math.floor(factory.baseCost * Math.pow(1.15, count));
@@ -241,7 +241,7 @@ function GameStats() {
                 key={factory.name}
                 onClick={() => buyFactory(index)}
                 disabled={fortune < cost}
-                className="p-2 md:p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 text-xs md:text-sm transition-colors flex flex-col items-center"
+                className="p-3 md:p-4 bg-purple-600 hover:bg-purple-700 text-white rounded-xl disabled:opacity-50 text-sm md:text-base transition-colors flex flex-col items-center gap-1"
               >
                 <div className="text-lg">{factory.emoji}</div>
                 <div>{factory.name}</div>
@@ -301,8 +301,8 @@ export default function Frame() {
   }
 
   return (
-    <div className="w-full h-screen p-2 md:p-4 flex flex-col bg-gradient-to-br from-gray-900 to-black">
-      <div className="flex-grow w-full mx-auto">
+    <div className="w-full h-screen p-4 md:p-6 flex flex-col bg-gradient-to-br from-gray-900 to-black">
+      <div className="flex-1 w-full mx-auto max-w-2xl">
         <GameStats />
       </div>
     </div>

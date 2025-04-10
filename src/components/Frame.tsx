@@ -179,26 +179,26 @@ function GameStats() {
         </div>
 
         <div className="relative w-full">
-          {Array.from({ length: hatsPerSecond }).map((_, i) => (
+          {Array.from({ length: Math.min(hatsPerSecond, 100) }).map((_, i) => (
             <div
               key={i}
-              className="absolute -inset-0 animate-rotate"
+              className="absolute -inset-0 animate-orbit"
               style={{
-                animationDelay: `${i * 0.5}s`,
-                transform: `rotate(${i * 45}deg) translateY(-50px)`,
+                animationDelay: `${(i % 10) * 0.5}s`,
+                transform: `rotate(${(i * 360) / Math.min(hatsPerSecond, 100)}deg) translateX(50px) translateY(50px)`,
               }}
             >
-              <div className="absolute left-1/2 -translate-x-1/2 animate-spin">
+              <div className="absolute animate-spin">
                 🎩
               </div>
             </div>
           ))}
           <button 
             onClick={handleClick}
-            className="relative w-full py-4 md:py-6 bg-gradient-to-r from-red-500 to-yellow-500 text-black rounded-lg hover:from-red-600 hover:to-yellow-600 transition-all font-bold flex flex-col items-center gap-2 text-lg md:text-xl z-10"
+            className="relative w-full py-4 md:py-6 bg-gradient-to-r from-red-500 to-yellow-500 text-black rounded-full hover:from-red-600 hover:to-yellow-600 transition-all font-bold flex flex-col items-center gap-2 text-lg md:text-xl z-10"
           >
           <div className="text-4xl animate-bounce">🎩</div>
-          <div>RISK IT ALL</div>
+          <div>COLLECT</div>
           <div className="text-sm">+{clickMultiplier.toFixed(1)}× DEGEN</div>
         </button>
         </div>
@@ -270,12 +270,16 @@ function GameStats() {
       </CardContent>
     </Card>
     <style>{`
-      @keyframes rotate {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
+      @keyframes orbit {
+        from {
+          transform: rotate(0deg) translateX(50px) translateY(50px);
+        }
+        to {
+          transform: rotate(360deg) translateX(50px) translateY(50px);
+        }
       }
-      .animate-rotate {
-        animation: rotate 8s linear infinite;
+      .animate-orbit {
+        animation: orbit 8s linear infinite;
       }
       .animate-spin {
         animation: spin 2s linear infinite;

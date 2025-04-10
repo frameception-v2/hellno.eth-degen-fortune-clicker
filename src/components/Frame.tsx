@@ -164,7 +164,7 @@ function GameStats() {
 
   return (
     <>
-      <Card className="h-full flex flex-col bg-opacity-90 bg-gray-800 border-yellow-500 rounded-xl shadow-2xl">
+      <Card className="h-full flex flex-col bg-opacity-90 bg-gray-800 border-yellow-500 shadow-lg min-h-[calc(100vh-32px)]">
         <CardHeader>
         <CardTitle>🤑 Degen Fortune</CardTitle>
         <CardDescription>
@@ -301,8 +301,8 @@ export default function Frame() {
   }
 
   return (
-    <div className="w-full h-screen p-4 md:p-6 flex flex-col bg-gradient-to-br from-gray-900 to-black">
-      <div className="flex-1 w-full mx-auto max-w-2xl">
+    <div className="w-full h-screen flex flex-col bg-gradient-to-br from-gray-900 to-black">
+      <div className="flex-1 w-full mx-auto max-w-4xl h-full px-2 md:px-4">
         <GameStats />
       </div>
     </div>

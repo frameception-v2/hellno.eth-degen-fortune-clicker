@@ -157,14 +157,14 @@ function GameStats() {
   }, [fortune]);
 
   return (
-    <Card>
+    <Card className="h-full flex flex-col bg-opacity-90 bg-gray-800 border-yellow-500">
       <CardHeader>
         <CardTitle>🤑 Degen Fortune</CardTitle>
         <CardDescription>
           Each click risks it all for crypto wisdom. Will you HODL or fold?
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="flex flex-col flex-grow space-y-4 p-4">
         <div className="flex justify-between">
           <Label>Fortune: ${Math.floor(fortune).toLocaleString()}</Label>
           <Label>Upgrades: {upgrades}</Label>
@@ -173,16 +173,16 @@ function GameStats() {
 
         <button 
           onClick={handleClick}
-          className="w-full py-6 bg-gradient-to-r from-red-500 to-yellow-500 text-black rounded-lg hover:from-red-600 hover:to-yellow-600 transition-all font-bold flex flex-col items-center gap-2"
+          className="w-full py-4 md:py-6 bg-gradient-to-r from-red-500 to-yellow-500 text-black rounded-lg hover:from-red-600 hover:to-yellow-600 transition-all font-bold flex flex-col items-center gap-2 text-lg md:text-xl"
         >
           <div className="text-4xl">🎩</div>
           <div>REVEAL FORTUNE</div>
           <div className="text-sm">+{clickMultiplier.toFixed(4)}</div>
         </button>
 
-        <div className="mb-4 min-h-[80px] border rounded p-2 bg-yellow-50 relative dark:bg-gray-800">
-          <div className="text-sm mb-1 text-gray-500">Degen Terminal v0x{upgrades.toString(16)}</div>
-          <div className="font-mono dark:text-gray-900">
+        <div className="mb-4 min-h-[120px] border-2 border-yellow-500 rounded-lg p-3 bg-gray-900 relative">
+          <div className="text-sm mb-2 text-yellow-500">Degen Terminal v0x{upgrades.toString(16)}</div>
+          <div className="font-mono text-yellow-400 text-sm md:text-base">
             {currentFortune || "Click to reveal first secret..."}
           </div>
           
@@ -199,11 +199,11 @@ function GameStats() {
         </div>
         
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3 md:gap-4">
           <button
             onClick={buyUpgrade}
             disabled={fortune < upgradeCost}
-            className="p-2 bg-green-500 text-white rounded disabled:opacity-50"
+            className="p-2 md:p-3 bg-green-600 hover:bg-green-700 text-white rounded-lg disabled:opacity-50 text-sm md:text-base transition-colors"
           >
             Degenerate Wisdom ({upgradeCost.toLocaleString()} $DEGEN)
           </button>
@@ -211,7 +211,7 @@ function GameStats() {
           <button
             onClick={buyFactory}
             disabled={fortune < FACTORY_COST}
-            className="p-2 bg-purple-500 text-white rounded disabled:opacity-50"
+            className="p-2 md:p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 text-sm md:text-base transition-colors"
           >
             Oracle Node ({FACTORY_COST.toLocaleString()} $DEGEN)
           </button>
@@ -233,8 +233,10 @@ export default function Frame() {
   }
 
   return (
-    <div className="w-[300px] mx-auto py-2 px-2">
-      <GameStats />
+    <div className="w-full h-screen p-4 flex flex-col bg-gradient-to-br from-gray-900 to-black">
+      <div className="flex-grow max-w-2xl w-full mx-auto">
+        <GameStats />
+      </div>
     </div>
   );
 }

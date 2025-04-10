@@ -1,6 +1,6 @@
 export const PROJECT_ID = 'farcaster-frames-template';
 export const PROJECT_TITLE = "Degen Fortune";
-export const PROJECT_DESCRIPTION = "Unveil crypto secrets through risky clicks and degenerate wisdom. A degen.tips lore experience";
+export const PROJECT_DESCRIPTION = "🎩 RISK IT ALL FOR CRYPTO GLORY - THE ULTIMATE DEGEN SIMULATOR";
 
 export const INITIAL_UPGRADE_COST = 100;
 export const UPGRADE_COST_MULTIPLIER = 1.5;

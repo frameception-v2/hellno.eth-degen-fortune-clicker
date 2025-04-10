@@ -163,8 +163,9 @@ function GameStats() {
   }, [fortune, factories]);
 
   return (
-    <Card className="h-full flex flex-col bg-opacity-90 bg-gray-800 border-yellow-500">
-      <CardHeader>
+    <>
+      <Card className="h-full flex flex-col bg-opacity-90 bg-gray-800 border-yellow-500">
+        <CardHeader>
         <CardTitle>🤑 Degen Fortune</CardTitle>
         <CardDescription>
           Each click risks it all for crypto wisdom. Will you HODL or fold?
@@ -177,14 +178,30 @@ function GameStats() {
           <Label>Factories: {factories}</Label>
         </div>
 
-        <button 
-          onClick={handleClick}
-          className="w-full py-4 md:py-6 bg-gradient-to-r from-red-500 to-yellow-500 text-black rounded-lg hover:from-red-600 hover:to-yellow-600 transition-all font-bold flex flex-col items-center gap-2 text-lg md:text-xl"
-        >
-          <div className="text-4xl">🎩</div>
+        <div className="relative w-full">
+          {Array.from({ length: hatsPerSecond }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute -inset-0 animate-rotate"
+              style={{
+                animationDelay: `${i * 0.5}s`,
+                transform: `rotate(${i * 45}deg) translateY(-50px)`,
+              }}
+            >
+              <div className="absolute left-1/2 -translate-x-1/2 animate-spin">
+                🎩
+              </div>
+            </div>
+          ))}
+          <button 
+            onClick={handleClick}
+            className="relative w-full py-4 md:py-6 bg-gradient-to-r from-red-500 to-yellow-500 text-black rounded-lg hover:from-red-600 hover:to-yellow-600 transition-all font-bold flex flex-col items-center gap-2 text-lg md:text-xl z-10"
+          >
+          <div className="text-4xl animate-bounce">🎩</div>
           <div>RISK IT ALL</div>
-          <div className="text-sm">+?̶̉̚DEGEN</div>
+          <div className="text-sm">+{clickMultiplier.toFixed(1)}× DEGEN</div>
         </button>
+        </div>
 
         <div className="mb-4 min-h-[120px] border-2 border-yellow-500 rounded-lg p-3 bg-gray-900 relative">
           <div className="text-sm mb-2 text-yellow-500">Degen Terminal v0x{upgrades.toString(16)}</div>
@@ -252,6 +269,23 @@ function GameStats() {
         </div>
       </CardContent>
     </Card>
+    <style>{`
+      @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      .animate-rotate {
+        animation: rotate 8s linear infinite;
+      }
+      .animate-spin {
+        animation: spin 2s linear infinite;
+      }
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+    `}</style>
+    </>
   );
 }
 

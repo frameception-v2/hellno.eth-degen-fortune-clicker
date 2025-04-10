@@ -144,7 +144,7 @@ function GameStats() {
         }
         return newLevel;
       });
-      setClickMultiplier(prev => prev * CLICK_MULTIPLIER * volatility);
+      setClickMultiplier(prev => prev + (CLICK_MULTIPLIER * Math.sqrt(volatility)));
       setVolatility(prev => Math.min(10, prev * 1.2)); // Increase volatility with upgrades
     }
   }, [fortune, upgradeCost, volatility, achievements]);
@@ -171,9 +171,18 @@ function GameStats() {
           <Label>Factories: {factories}</Label>
         </div>
 
-        <div className="mb-4 min-h-[80px] border rounded p-2 bg-yellow-50 relative">
+        <button 
+          onClick={handleClick}
+          className="w-full py-6 bg-gradient-to-r from-red-500 to-yellow-500 text-black rounded-lg hover:from-red-600 hover:to-yellow-600 transition-all font-bold flex flex-col items-center gap-2"
+        >
+          <div className="text-4xl">🎩</div>
+          <div>REVEAL FORTUNE</div>
+          <div className="text-sm">+{clickMultiplier.toFixed(4)}</div>
+        </button>
+
+        <div className="mb-4 min-h-[80px] border rounded p-2 bg-yellow-50 relative dark:bg-gray-800">
           <div className="text-sm mb-1 text-gray-500">Degen Terminal v0x{upgrades.toString(16)}</div>
-          <div className="font-mono">
+          <div className="font-mono dark:text-gray-900">
             {currentFortune || "Click to reveal first secret..."}
           </div>
           
@@ -189,12 +198,6 @@ function GameStats() {
           <div>Achievements: {achievements.length}/15</div>
         </div>
         
-        <button 
-          onClick={handleClick}
-          className="w-full py-4 bg-gradient-to-r from-red-500 to-yellow-500 text-black rounded-lg hover:from-red-600 hover:to-yellow-600 transition font-bold"
-        >
-          REVEAL FORTUNE (+${clickMultiplier})
-        </button>
 
         <div className="grid grid-cols-2 gap-4">
           <button

@@ -5,10 +5,9 @@ import {
   INITIAL_UPGRADE_COST,
   UPGRADE_COST_MULTIPLIER,
   CLICK_MULTIPLIER,
-  FACTORY_COST,
-  FACTORY_PRODUCTION,
-  FORTUNE_CHANCE
-} from "~/lib/gameConstants";
+  FORTUNE_CHANCE,
+  FACTORY_TYPES
+} from "~/lib/constants";
 import {
   Card,
   CardHeader,
@@ -58,7 +57,7 @@ function GameStats() {
   const [systemMessage, setSystemMessage] = useState("");
   const [currentFortune, setCurrentFortune] = useState("");
   const [upgrades, setUpgrades] = useState(0);
-  const [factories, setFactories] = useState(0);
+  const [factories, setFactories] = useState([0, 0, 0]);
   const [clickMultiplier, setClickMultiplier] = useState(1);
   const [autoClickerInterval, setAutoClickerInterval] = useState<NodeJS.Timeout>();
 
@@ -68,13 +67,14 @@ function GameStats() {
     [upgrades]
   );
   const hatsPerSecond = useMemo(() => 
-    factories * FACTORY_PRODUCTION,
+    factories.reduce((total, count, index) => 
+      total + count * FACTORY_TYPES[index].production, 0),
     [factories]
   );
 
   // Auto-clicker effect
   useEffect(() => {
-    if (factories > 0) {
+    if (factories.some(f => f > 0)) {
       const interval = setInterval(() => {
         setFortune(prev => prev + hatsPerSecond);
       }, 1000);
@@ -149,13 +149,18 @@ function GameStats() {
     }
   }, [fortune, upgradeCost, volatility, achievements]);
 
-  const buyFactory = useCallback(() => {
-    const factoryCost = Math.floor(FACTORY_COST * Math.pow(1.15, factories));
+  const buyFactory = useCallback((factoryIndex: number) => {
+    const factoryType = FACTORY_TYPES[factoryIndex];
+    const factoryCost = Math.floor(factoryType.baseCost * Math.pow(1.15, factories[factoryIndex]));
     if (fortune >= factoryCost) {
       setFortune(prev => prev - factoryCost);
-      setFactories(prev => prev + 1);
+      setFactories(prev => {
+        const newFactories = [...prev];
+        newFactories[factoryIndex] += 1;
+        return newFactories;
+      });
     }
-  }, [fortune]);
+  }, [fortune, factories]);
 
   return (
     <Card className="h-full flex flex-col bg-opacity-90 bg-gray-800 border-yellow-500">
@@ -200,27 +205,50 @@ function GameStats() {
         </div>
         
 
-        <div className="grid grid-cols-2 gap-3 md:gap-4">
+        <div className="grid grid-cols-1 gap-2 mb-4">
           <button
             onClick={buyUpgrade}
             disabled={fortune < upgradeCost}
             className="p-2 md:p-3 bg-green-600 hover:bg-green-700 text-white rounded-lg disabled:opacity-50 text-sm md:text-base transition-colors"
           >
-            Degenerate Wisdom ({upgradeCost.toLocaleString()} $DEGEN)
-          </button>
-          
-          <button
-            onClick={buyFactory}
-            disabled={fortune < FACTORY_COST}
-            className="p-2 md:p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 text-sm md:text-base transition-colors"
-          >
-            Oracle Node ({Math.floor(FACTORY_COST * Math.pow(1.15, factories)).toLocaleString()} $DEGEN)
+            🧠 Degenerate Wisdom ({upgradeCost.toLocaleString()} $DEGEN)
           </button>
         </div>
 
+        <div className="grid grid-cols-3 gap-2 md:gap-3">
+          {FACTORY_TYPES.map((factory, index) => {
+            const count = factories[index];
+            const cost = Math.floor(factory.baseCost * Math.pow(1.15, count));
+            return (
+              <button
+                key={factory.name}
+                onClick={() => buyFactory(index)}
+                disabled={fortune < cost}
+                className="p-2 md:p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 text-xs md:text-sm transition-colors flex flex-col items-center"
+              >
+                <div className="text-lg">{factory.emoji}</div>
+                <div>{factory.name}</div>
+                <div className="text-xs opacity-75 mt-1">
+                  {cost.toLocaleString()} $DEGEN
+                </div>
+                <div className="text-xs opacity-75">
+                  ({count} owned)
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
         <div className="text-center text-sm">
-          <Label>Production: {hatsPerSecond}/sec</Label>
-          <Label className="text-xs mt-1">Next Oracle Cost: {Math.floor(FACTORY_COST * Math.pow(1.15, factories)).toLocaleString()} $DEGEN</Label>
+          <Label>Production Breakdown:</Label>
+          <div className="text-xs space-y-1 mt-1">
+            {FACTORY_TYPES.map((factory, index) => (
+              <div key={factory.name}>
+                {factory.emoji} {factory.name}: {factories[index] * factory.production}/sec
+              </div>
+            ))}
+          </div>
+          <Label className="mt-2 block">Total Production: {hatsPerSecond}/sec</Label>
         </div>
       </CardContent>
     </Card>

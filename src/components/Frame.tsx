@@ -27,20 +27,35 @@ const DEGEN_TIPS = [
   "Rugpulls are just unregistered ICOs",
   "The best time to ape was yesterday. Second best is now",
   "If chart going up, it's a bull market. If down, accumulation phase",
-  "Your seed phrase is: pizza salad burger... just kidding"
+  "Your seed phrase is: pizza salad burger... just kidding",
+  "Moon farming requires 125x leverage and diamond hands",
+  "The real risk management is having multiple metamask wallets",
+  "If CEX reserves are low, it's just proof of community HODLing",
+  "Smart contracts can't be hacked if you never verify them",
+  "The only KYC you need is 'Know Your Cex'",
+  "Liquidity is someone else's problem - be the exit",
+  "Flash loans are just free money experiments"
 ];
 
 const CRYPTIC_EVENTS = [
   { text: "You discover a secret Satoshi tweetstorm... (+500% multiplier!)", multiplier: 5 },
   { text: "The SEC raids your metamask... (Lost 50% fortune!)", multiplier: -0.5 },
   { text: "Vitalik retweets your memecoin... (2x production!)", effect: "2x" },
-  { text: "Celsius unlocks your assets... (Refund 20%!)", effect: "refund" }
+  { text: "Celsius unlocks your assets... (Refund 20%!)", effect: "refund" },
+  { text: "You front-run a whale transaction... (+300% but volatility up!)", multiplier: 3, volatility: 2 },
+  { text: "The merge completes early... All gains 10x!", multiplier: 10 },
+  { text: "Binance lists your shitcoin... (Production 5x!)", effect: "5x" },
+  { text: "Tether collapses... (Everything -90%!)", multiplier: 0.1 },
+  { text: "You discover a quantum-resistant algorithm... (Immunity next 3 events)", effect: "immunity" },
+  { text: "Anonymous donates their Bitcoin stash... (+777%)", multiplier: 7.77 }
 ];
 
 function GameStats() {
   const [fortune, setFortune] = useState(0);
   const [lore, setLore] = useState<string[]>([]);
   const [achievements, setAchievements] = useState<string[]>([]);
+  const [volatility, setVolatility] = useState(1);
+  const [systemMessage, setSystemMessage] = useState("");
   const [currentFortune, setCurrentFortune] = useState("");
   const [upgrades, setUpgrades] = useState(0);
   const [factories, setFactories] = useState(0);
@@ -87,28 +102,59 @@ function GameStats() {
     }
     
     // Check for secret achievements
+    const newAchievements: string[] = [];
     if (baseFortune < 0 && !achievements.includes("Liquidation Wizard")) {
-      setAchievements(prev => [...prev, "Liquidation Wizard"]);
+      newAchievements.push("Liquidation Wizard");
+    }
+    if (fortune >= 1000000 && !achievements.includes("Whale Watching")) {
+      newAchievements.push("Whale Watching");
+    }
+    if (upgrades >= 10 && !achievements.includes("Ultra Degen")) {
+      newAchievements.push("Ultra Degen");
+    }
+    if (lore.length > 50 && !achievements.includes("Lore Master")) {
+      newAchievements.push("Lore Master");
+    }
+    
+    if (newAchievements.length > 0) {
+      setAchievements(prev => [...prev, ...newAchievements]);
+      setSystemMessage(`ACHIEVEMENT UNLOCKED: ${newAchievements.join(", ")}`);
+      setTimeout(() => setSystemMessage(""), 5000);
+    }
+
+    // Update volatility based on events
+    if (fortuneEvent.volatility) {
+      setVolatility(prev => Math.min(10, prev + fortuneEvent.volatility));
     }
     
     setFortune(prev => Math.max(0, prev + Math.floor(baseFortune)));
     setLore(prev => [...prev.slice(-4), currentFortune]);
-  }, [clickMultiplier, currentFortune, achievements]);
+  }, [clickMultiplier, currentFortune, achievements, fortune, lore.length, upgrades]);
 
   const buyUpgrade = useCallback(() => {
     if (fortune >= upgradeCost) {
       setFortune(prev => prev - upgradeCost);
-      setUpgrades(prev => prev + 1);
-      setClickMultiplier(prev => prev * CLICK_MULTIPLIER);
+      setUpgrades(prev => {
+        const newLevel = prev + 1;
+        // Every 5 upgrades unlocks a new tier
+        if (newLevel % 5 === 0 && !achievements.includes(`Tier ${newLevel/5} Degen`)) {
+          setAchievements(prev => [...prev, `Tier ${newLevel/5} Degen`]);
+          setSystemMessage(`UNLOCKED TIER ${newLevel/5} DEGENERACY!`);
+          setTimeout(() => setSystemMessage(""), 5000);
+        }
+        return newLevel;
+      });
+      setClickMultiplier(prev => prev * CLICK_MULTIPLIER * volatility);
+      setVolatility(prev => Math.min(10, prev * 1.2)); // Increase volatility with upgrades
     }
-  }, [fortune, upgradeCost, CLICK_MULTIPLIER]);
+  }, [fortune, upgradeCost, volatility, achievements]);
 
   const buyFactory = useCallback(() => {
     if (fortune >= FACTORY_COST) {
       setFortune(prev => prev - FACTORY_COST);
       setFactories(prev => prev + 1);
     }
-  }, [fortune, FACTORY_COST]);
+  }, [fortune]);
 
   return (
     <Card>
@@ -125,8 +171,22 @@ function GameStats() {
           <Label>Factories: {factories}</Label>
         </div>
 
-        <div className="mb-4 min-h-[80px] border rounded p-2 bg-yellow-50">
-          {currentFortune || "Click to reveal first secret..."}
+        <div className="mb-4 min-h-[80px] border rounded p-2 bg-yellow-50 relative">
+          <div className="text-sm mb-1 text-gray-500">Degen Terminal v0x{upgrades.toString(16)}</div>
+          <div className="font-mono">
+            {currentFortune || "Click to reveal first secret..."}
+          </div>
+          
+          {systemMessage && (
+            <div className="absolute bottom-0 left-0 right-0 bg-black text-yellow-400 p-1 text-xs animate-pulse">
+              {systemMessage}
+            </div>
+          )}
+        </div>
+
+        <div className="flex justify-between text-sm mb-4">
+          <div className="text-red-500">Volatility: {volatility.toFixed(1)}x</div>
+          <div>Achievements: {achievements.length}/15</div>
         </div>
         
         <button 

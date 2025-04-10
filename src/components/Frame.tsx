@@ -150,8 +150,9 @@ function GameStats() {
   }, [fortune, upgradeCost, volatility, achievements]);
 
   const buyFactory = useCallback(() => {
-    if (fortune >= FACTORY_COST) {
-      setFortune(prev => prev - FACTORY_COST);
+    const factoryCost = Math.floor(FACTORY_COST * Math.pow(1.15, factories));
+    if (fortune >= factoryCost) {
+      setFortune(prev => prev - factoryCost);
       setFactories(prev => prev + 1);
     }
   }, [fortune]);
@@ -176,8 +177,8 @@ function GameStats() {
           className="w-full py-4 md:py-6 bg-gradient-to-r from-red-500 to-yellow-500 text-black rounded-lg hover:from-red-600 hover:to-yellow-600 transition-all font-bold flex flex-col items-center gap-2 text-lg md:text-xl"
         >
           <div className="text-4xl">🎩</div>
-          <div>REVEAL FORTUNE</div>
-          <div className="text-sm">+{clickMultiplier.toFixed(4)}</div>
+          <div>RISK IT ALL</div>
+          <div className="text-sm">+?̶̉̚DEGEN</div>
         </button>
 
         <div className="mb-4 min-h-[120px] border-2 border-yellow-500 rounded-lg p-3 bg-gray-900 relative">
@@ -213,12 +214,13 @@ function GameStats() {
             disabled={fortune < FACTORY_COST}
             className="p-2 md:p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 text-sm md:text-base transition-colors"
           >
-            Oracle Node ({FACTORY_COST.toLocaleString()} $DEGEN)
+            Oracle Node ({Math.floor(FACTORY_COST * Math.pow(1.15, factories)).toLocaleString()} $DEGEN)
           </button>
         </div>
 
         <div className="text-center text-sm">
           <Label>Production: {hatsPerSecond}/sec</Label>
+          <Label className="text-xs mt-1">Next Oracle Cost: {Math.floor(FACTORY_COST * Math.pow(1.15, factories)).toLocaleString()} $DEGEN</Label>
         </div>
       </CardContent>
     </Card>

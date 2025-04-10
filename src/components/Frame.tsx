@@ -297,8 +297,8 @@ export default function Frame() {
   }
 
   return (
-    <div className="w-full h-screen p-4 flex flex-col bg-gradient-to-br from-gray-900 to-black">
-      <div className="flex-grow max-w-2xl w-full mx-auto">
+    <div className="w-full h-screen p-2 md:p-4 flex flex-col bg-gradient-to-br from-gray-900 to-black">
+      <div className="flex-grow w-full mx-auto">
         <GameStats />
       </div>
     </div>

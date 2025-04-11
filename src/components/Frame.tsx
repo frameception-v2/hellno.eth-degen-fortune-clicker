@@ -50,10 +50,19 @@ const CRYPTIC_EVENTS = [
   { text: "Anonymous donates their Bitcoin stash... (+777%)", multiplier: 7.77 }
 ];
 
+const formatLargeNumber = (num: number): string => {
+  if (num < 1000) return num.toString();
+  if (num < 1000000) return `${(num/1000).toFixed(1)}k`;
+  if (num < 1000000000) return `${(num/1000000).toFixed(1)}M`;
+  if (num < 1000000000000) return `${(num/1000000000).toFixed(1)}B`;
+  return `${(num/1000000000000).toFixed(1)}T`;
+};
+
 function GameStats() {
   const [fortune, setFortune] = useState(0);
   const [lore, setLore] = useState<string[]>([]);
   const [achievements, setAchievements] = useState<string[]>([]);
+  const [username] = useState("Anon"); // In a real app, this would come from authentication
   const [volatility, setVolatility] = useState(1);
   const [systemMessage, setSystemMessage] = useState("");
   const [currentFortune, setCurrentFortune] = useState("");
@@ -167,9 +176,12 @@ function GameStats() {
     <>
       <Card className="h-full flex flex-col bg-opacity-90 bg-gray-800 border-yellow-500 shadow-lg min-h-[calc(100vh-32px)]">
         <CardHeader>
-        <CardTitle>🤑 Degen Fortune</CardTitle>
-        <CardDescription>
-          Each click risks it all for crypto wisdom. Will you HODL or fold?
+        <CardTitle className="text-3xl flex items-center justify-center gap-2">
+          <span>🤑</span>
+          <span>{formatLargeNumber(fortune)} $DEGEN</span>
+        </CardTitle>
+        <CardDescription className="text-center">
+          {username}'s Degen Den
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col flex-grow space-y-6 p-4 md:p-6">

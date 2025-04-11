@@ -180,16 +180,12 @@ function GameStats() {
           <span>🤑</span>
           <span>{formatLargeNumber(fortune)} $DEGEN</span>
         </CardTitle>
-        <CardDescription className="text-center">
+        <CardDescription className="text-center flex flex-col gap-1">
           {username}'s Degen Den
+          <span className="text-sm opacity-75">Production: {hatsPerSecond}/sec</span>
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col flex-grow space-y-6 p-4 md:p-6">
-        <div className="flex justify-between">
-          <Label>Fortune: ${Math.floor(fortune).toLocaleString()}</Label>
-          <Label>Upgrades: {upgrades}</Label>
-          <Label>Factories: {factories}</Label>
-        </div>
 
         <div className="relative w-full">
           {Array.from({ length: Math.min(hatsPerSecond, 100) }).map((_, i) => (
@@ -217,19 +213,8 @@ function GameStats() {
         </div>
 
         <div className="flex justify-between text-sm mb-4">
-          <div className="text-red-500">Volatility: {volatility.toFixed(1)}x</div>
+          <div>Upgrades: {upgrades}</div>
           <div>Achievements: {achievements.length}/15</div>
-        </div>
-        
-
-        <div className="grid grid-cols-1 gap-3 mb-6">
-          <button
-            onClick={buyUpgrade}
-            disabled={fortune < upgradeCost}
-            className="p-3 md:p-4 bg-green-600 hover:bg-green-700 text-white rounded-xl disabled:opacity-50 text-base md:text-lg transition-colors user-select-none -webkit-user-select-none"
-          >
-            🧠 Degenerate Wisdom ({upgradeCost.toLocaleString()} $DEGEN)
-          </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">

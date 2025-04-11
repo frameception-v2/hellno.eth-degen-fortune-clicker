@@ -208,7 +208,7 @@ function GameStats() {
           ))}
           <button 
             onClick={handleClick}
-            className="relative w-full py-6 md:py-8 bg-gradient-to-r from-red-500 to-yellow-500 text-black rounded-full hover:from-red-600 hover:to-yellow-600 transition-all font-bold flex flex-col items-center gap-3 text-xl md:text-2xl z-10"
+            className="relative w-full py-6 md:py-8 bg-gradient-to-r from-red-500 to-yellow-500 text-black rounded-full hover:from-red-600 hover:to-yellow-600 transition-all font-bold flex flex-col items-center gap-3 text-xl md:text-2xl z-10 user-select-none -webkit-user-select-none"
           >
           <div className="text-5xl md:text-6xl animate-bounce">🎩</div>
           <div>COLLECT</div>
@@ -226,7 +226,7 @@ function GameStats() {
           <button
             onClick={buyUpgrade}
             disabled={fortune < upgradeCost}
-            className="p-3 md:p-4 bg-green-600 hover:bg-green-700 text-white rounded-xl disabled:opacity-50 text-base md:text-lg transition-colors"
+            className="p-3 md:p-4 bg-green-600 hover:bg-green-700 text-white rounded-xl disabled:opacity-50 text-base md:text-lg transition-colors user-select-none -webkit-user-select-none"
           >
             🧠 Degenerate Wisdom ({upgradeCost.toLocaleString()} $DEGEN)
           </button>
@@ -241,7 +241,7 @@ function GameStats() {
                 key={factory.name}
                 onClick={() => buyFactory(index)}
                 disabled={fortune < cost}
-                className="p-3 md:p-4 bg-purple-600 hover:bg-purple-700 text-white rounded-xl disabled:opacity-50 text-sm md:text-base transition-colors flex flex-col items-center gap-1"
+                className="p-3 md:p-4 bg-purple-600 hover:bg-purple-700 text-white rounded-xl disabled:opacity-50 text-sm md:text-base transition-colors flex flex-col items-center gap-1 user-select-none -webkit-user-select-none"
               >
                 <div className="text-lg">{factory.emoji}</div>
                 <div>{factory.name}</div>
